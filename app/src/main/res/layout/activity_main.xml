@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+
+        </android.support.v7.widget.Toolbar>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include
+        layout="@layout/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="110dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="8dp">
+
+        <EditText
+            android:id="@+id/et_input_count"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_et"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_toRightOf="@id/et_input_count"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_take"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="35dp"
+                android:background="@drawable/bg_btn"
+                android:singleLine="true"
+                android:text="Take"
+                android:textColor="@color/color_orange"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/btn_take_last"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="35dp"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:background="@drawable/bg_btn"
+                android:singleLine="true"
+                android:text="TakeLast"
+                android:textColor="@color/colorPrimary"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/btn_filter"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="35dp"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:background="@drawable/bg_btn"
+                android:singleLine="true"
+                android:text="Filter"
+                android:textColor="@color/common_red_color"
+                android:textSize="11sp" />
+
+
+            <Button
+                android:id="@+id/btn_scan"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="35dp"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:background="@drawable/bg_btn"
+                android:singleLine="true"
+                android:text="Scan"
+                android:textColor="@color/color_purple"
+                android:textSize="11sp" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

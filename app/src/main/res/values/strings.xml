@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">RxAndroid</string>
+    <string name="action_settings">Settings</string>
+    <string name="rx_error">RxJava Error</string>
+    <string name="rx_load_complete">RxJava Load Complete</string>
+    <string name="input_count">input count</string>
+</resources>
