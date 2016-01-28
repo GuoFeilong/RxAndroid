@@ -1,6 +1,15 @@
 package com.rxandroid.ui;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,11 +28,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.rxandroid.R;
 import com.rxandroid.base.BaseActivity;
 import com.rxandroid.entity.AppInfoEntity;
 import com.rxandroid.presenter.impl.AppInfoPresenterImpl;
 import com.rxandroid.tools.T;
+import com.rxandroid.tools.logger.Logger;
+import com.rxandroid.ui.customview.ChangeColorImageView;
 import com.rxandroid.view.AppInfoView;
 
 import java.util.ArrayList;
@@ -51,12 +67,35 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
     @Bind(R.id.btn_scan)
     Button mScan;
 
-    TextView textView;
 
+    @Bind(R.id.iv_test)
+    ImageView imageView;
+    @Bind(R.id.iv_test1)
+    ImageView imageView1;
+    @Bind(R.id.iv_test2)
+    ImageView imageView2;
+    @Bind(R.id.iv_test3)
+    ImageView imageView3;
+    @Bind(R.id.civ_change)
+    ChangeColorImageView changeColorImageView;
+    @Bind(R.id.civ_1)
+    ChangeColorImageView changeColorImageView1;
+    @Bind(R.id.civ_2)
+    ChangeColorImageView changeColorImageView2;
+    @Bind(R.id.civ_3)
+    ChangeColorImageView changeColorImageView3;
+    @Bind(R.id.civ_4)
+    ChangeColorImageView changeColorImageView4;
+    @Bind(R.id.civ_5)
+    ChangeColorImageView changeColorImageView5;
+    @Bind(R.id.civ_6)
+    ChangeColorImageView changeColorImageView6;
     private AppInfoPresenterImpl mAppInfoPresenter;
     private ArrayList<AppInfoEntity> mAppInfos;
     private AppInfoAdapter mAppInfoAdapter;
     private int mCount;
+
+    private Integer[] colors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +135,61 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
         if (!TextUtils.isEmpty(mInputCount.getText().toString())) {
             mCount = Integer.parseInt(mInputCount.getText().toString());
         }
+
+        colors = new Integer[]{getResources().getColor(R.color.color_orange),
+                getResources().getColor(R.color.color_pink),
+                getResources().getColor(R.color.color_purple),
+                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.common_text_color)};
     }
 
     @Override
     protected void initView() {
         ButterKnife.bind(this);
+        Glide.with(MainActivity.this)
+                .load("http://nuuneoi.com/uploads/source/playstore/cover.jpg")
+                .placeholder(R.mipmap.bg_de)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .crossFade()
+                .into(imageView);
+
+        Glide.with(MainActivity.this)
+                .load("http://nuuneoi.com/uploads/source/playstore/cover.jpg")
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.mipmap.bg_de)
+                .transform(new GlideRoundTransform(this, 20))
+                .into(imageView1);
+
+//        Glide.with(MainActivity.this)
+//                .load("http://nuuneoi.com/uploads/source/playstore/cover.jpg")
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .placeholder(R.mipmap.bg_de)
+//                .transform(new GlideCircleTransform(this))
+//                .into(imageView2);
+
+
+        Glide.with(MainActivity.this)
+                .load("http://nuuneoi.com/uploads/source/playstore/cover.jpg")
+                .asBitmap().centerCrop()
+                .placeholder(R.mipmap.bg_de)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new BitmapImageViewTarget(imageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(MainActivity.this.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        imageView2.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+
+        Glide.with(MainActivity.this)
+//                .load("http://ww2.sinaimg.cn/bmiddle/dc66b248jw1eznsz2nn2xg209607aqv5.gif")
+                .load("http://s1.dwstatic.com/group1/M00/3E/BD/767a2ffb59b04d8ddba07a86650601bf.gif")
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.mipmap.bg_de)
+                .transform(new GlideRoundTransform(this, 10))
+                .into(imageView3);
     }
 
     @Override
@@ -138,6 +227,13 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
         mScan.setOnClickListener(this);
 
         mInputCount.addTextChangedListener(this);
+        changeColorImageView.setOnClickListener(this);
+        changeColorImageView1.setOnClickListener(this);
+        changeColorImageView2.setOnClickListener(this);
+        changeColorImageView3.setOnClickListener(this);
+        changeColorImageView4.setOnClickListener(this);
+        changeColorImageView5.setOnClickListener(this);
+        changeColorImageView6.setOnClickListener(this);
     }
 
     @Override
@@ -251,7 +347,7 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mAppInfoPresenter!=null){
+        if (mAppInfoPresenter != null) {
             mAppInfoPresenter.unSubscriberRX();
         }
     }
@@ -280,6 +376,27 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
                 break;
             case R.id.btn_scan:
                 mAppInfoPresenter.scanAppInfo();
+                break;
+            case R.id.civ_1:
+                changeColorImageView1.setShadowColor(getResources().getColor(R.color.dialog_text_color));
+                break;
+            case R.id.civ_2:
+                changeColorImageView2.setShadowColor(getResources().getColor(R.color.common_line));
+                break;
+            case R.id.civ_3:
+                changeColorImageView3.setShadowColor(getResources().getColor(R.color.colorAccent));
+                break;
+            case R.id.civ_4:
+                changeColorImageView4.setShadowColor(getResources().getColor(R.color.color_orange));
+                break;
+            case R.id.civ_5:
+                changeColorImageView5.setShadowColor(getResources().getColor(R.color.shake_color));
+                break;
+            case R.id.civ_6:
+                changeColorImageView6.setShadowColor(getResources().getColor(R.color.cardview_dark_background));
+                break;
+            case R.id.civ_change:
+                changeColorImageView.setColors(colors);
                 break;
         }
     }
@@ -321,5 +438,81 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
         }
     }
 
+    /**
+     * Glide圆角处理
+     */
+    public class GlideRoundTransform extends BitmapTransformation {
+        private float radius = 0f;
+
+        public GlideRoundTransform(Context context) {
+            this(context, 4);
+        }
+
+        public GlideRoundTransform(Context context, int dp) {
+            super(context);
+            this.radius = Resources.getSystem().getDisplayMetrics().density * dp;
+        }
+
+        @Override
+        protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+            return roundCrop(pool, toTransform);
+        }
+
+        private Bitmap roundCrop(BitmapPool pool, Bitmap source) {
+            if (source == null) return null;
+            Bitmap result = pool.get(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+            if (result == null) {
+                result = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+            }
+            Canvas canvas = new Canvas(result);
+            Paint paint = new Paint();
+            paint.setShader(new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
+            paint.setAntiAlias(true);
+            RectF rectF = new RectF(0f, 0f, source.getWidth(), source.getHeight());
+            canvas.drawRoundRect(rectF, radius, radius, paint);
+            return result;
+        }
+
+        @Override
+        public String getId() {
+            return getClass().getName() + Math.round(radius);
+        }
+    }
+
+    public class GlideCircleTransform extends BitmapTransformation {
+        public GlideCircleTransform(Context context) {
+            super(context);
+        }
+
+        protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+            return circleCrop(pool, toTransform);
+        }
+
+        private Bitmap circleCrop(BitmapPool pool, Bitmap source) {
+            if (source == null) return null;
+            int size = Math.min(source.getWidth(), source.getHeight());
+            int x = (source.getWidth() - size) / 2;
+            int y = (source.getHeight() - size) / 2;
+            // TODO this could be acquired from the pool too
+            Bitmap squared = Bitmap.createBitmap(source, x, y, size, size);
+            Bitmap result = pool.get(size, size, Bitmap.Config.ARGB_8888);
+            if (result == null) {
+                result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+            }
+            Canvas canvas = new Canvas(result);
+            Paint paint = new Paint();
+            paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
+            paint.setAntiAlias(true);
+            float r = size / 2f;
+            canvas.drawCircle(r, r, r, paint);
+            Logger.e(x + "===" + y + "====" + r + "---" + result.getWidth() + "---" + result.getHeight());
+            return result;
+        }
+
+        @Override
+        public String getId() {
+            return getClass().getName();
+        }
+    }
 
 }
