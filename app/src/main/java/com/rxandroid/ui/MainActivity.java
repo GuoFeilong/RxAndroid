@@ -1,6 +1,7 @@
 package com.rxandroid.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -43,9 +44,15 @@ import com.rxandroid.ui.customview.ChangeColorImageView;
 import com.rxandroid.view.AppInfoView;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefreshLayout.OnRefreshListener, TextWatcher {
@@ -66,8 +73,6 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
     Button mFilter;
     @Bind(R.id.btn_scan)
     Button mScan;
-
-
     @Bind(R.id.iv_test)
     ImageView imageView;
     @Bind(R.id.iv_test1)
@@ -96,14 +101,50 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
     private int mCount;
 
     private Integer[] colors;
+    private Integer[] colors2;
+
+    public int test;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // for test
+        MainActivity mainActivity = new MainActivity();
+        mainActivity.test = 3;
+
         initView();
         initData();
         initEvent();
+        String test = getNum("love23next234csdn3423javaeye");
+        Logger.e("Test>>>" + test+">>>"+mainActivity.test);
+    }
+
+    /**
+     * love23next234csdn3423javaeye
+     *
+     * @param source
+     * @return
+     */
+    private String getNum(String source) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < source.length(); i++) {
+            if (Character.isDigit(source.charAt(i))) {
+                stringBuffer.append(source.charAt(i));
+            } else {
+
+                String temp = stringBuffer.toString();
+                if (temp.length() - 1 >= 0) {
+                    String c = temp.charAt(temp.length() - 1) + "";
+                    if (!c.equals(" ")) {
+                        stringBuffer.append(" ");
+                    }
+                }
+            }
+        }
+
+        return stringBuffer.toString();
     }
 
     @Override
@@ -141,6 +182,13 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
                 getResources().getColor(R.color.color_purple),
                 getResources().getColor(R.color.colorPrimary),
                 getResources().getColor(R.color.common_text_color)};
+
+        colors2 = new Integer[]{R.color.color_orange,
+                R.color.color_pink,
+                R.color.color_purple,
+                R.color.colorPrimary,
+                R.color.common_text_color};
+
     }
 
     @Override
@@ -379,26 +427,152 @@ public class MainActivity extends BaseActivity implements AppInfoView, SwipeRefr
                 break;
             case R.id.civ_1:
                 changeColorImageView1.setShadowColor(getResources().getColor(R.color.dialog_text_color));
+                changeActivity(SunBabyLoadingActivity.class);
                 break;
             case R.id.civ_2:
                 changeColorImageView2.setShadowColor(getResources().getColor(R.color.common_line));
+                //rx等待十秒谈土司
+                Observable.timer(10, TimeUnit.SECONDS)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Long>() {
+                            @Override
+                            public void call(Long aLong) {
+                                T.show(MainActivity.this, "====" + aLong, 0);
+                            }
+                        });
                 break;
             case R.id.civ_3:
-                changeColorImageView3.setShadowColor(getResources().getColor(R.color.colorAccent));
+//                changeColorImageView3.setShadowColor(getResources().getColor(R.color.common_red_color));
+                changeColorImageView3.setColors(colors);
+                changeActivity(GlideTestActivity.class);
                 break;
             case R.id.civ_4:
-                changeColorImageView4.setShadowColor(getResources().getColor(R.color.color_orange));
+//                changeColorImageView4.setShadowColor(getResources().getColor(R.color.color_orange));
+                changeColorImageView4.setColors(colors);
+
                 break;
             case R.id.civ_5:
-                changeColorImageView5.setShadowColor(getResources().getColor(R.color.shake_color));
+//                changeColorImageView5.setShadowColor(getResources().getColor(R.color.shake_color));
+                changeColorImageView5.setColors(colors);
+
                 break;
             case R.id.civ_6:
-                changeColorImageView6.setShadowColor(getResources().getColor(R.color.cardview_dark_background));
+//                changeColorImageView6.setShadowColor(getResources().getColor(R.color.cardview_dark_background));
+                changeColorImageView6.setColors(colors);
+
                 break;
             case R.id.civ_change:
                 changeColorImageView.setColors(colors);
+//                changeColorsForver(colors);
+//                changeColorsHandler(colors2);
+
                 break;
         }
+    }
+
+
+    private void changeColorsHandler(final Integer[] colors) {
+
+//        for (int i = 0; i < colors.length; i++) {
+//            changeColorImageView.setShadowColor(getResources().getColor(colors[i]));
+//        }
+
+
+        Observable.interval(2, 2, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        T.show(MainActivity.this, "onCompleted", 0);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        T.show(MainActivity.this, "onError>>>" + e.toString(), 0);
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        int i = aLong.intValue();
+                        if (i == colors.length - 1) {
+                            this.unsubscribe();
+                            onCompleted();
+                        }
+                        changeColorImageView.setShadowColor(getResources().getColor(colors[i]));
+
+                        T.show(MainActivity.this, "onNext>>>" + colors[i], 0);
+
+                    }
+                });
+    }
+
+
+    private <T> void changeActivity(Class<T> tClass) {
+        Intent intent = new Intent(this, tClass);
+        startActivity(intent);
+    }
+
+    /**
+     * 循环设置颜色
+     *
+     * @param colors
+     */
+    private void changeColorsForver(final Integer[] colors) {
+        Subscriber<Integer> subscriber = new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                changeColorImageView.setShadowColorP(integer);
+                Logger.e("TAG___Main>>>>>" + integer);
+            }
+        };
+
+        Observable<Integer> observable = Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                if (subscriber.isUnsubscribed()) {
+                    return;
+                } else {
+                    for (int i = 0; i < colors.length; i++) {
+                        try {
+                            subscriber.onNext(colors[i]);
+                            Logger.i("TAG_Main>>>>线程-----颜色:" + colors[i]);
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
+                if (!subscriber.isUnsubscribed()) {
+                    subscriber.onCompleted();
+                }
+            }
+        });
+
+        observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        changeColorImageView.setShadowColorP(integer);
+                        Logger.e("call>>>>>" + integer);
+                    }
+                });
     }
 
     @Override

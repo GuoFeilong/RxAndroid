@@ -201,7 +201,9 @@
             android:id="@+id/civ_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/ic_launcher" />
+            android:background="@mipmap/ic_launcher"
+            gfl:iconColor="@color/colorPrimaryDark" />
+
 
     </LinearLayout>
 

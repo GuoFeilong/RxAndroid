@@ -10,12 +10,15 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.rxandroid.R;
 import com.rxandroid.tools.logger.Logger;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -26,6 +29,8 @@ import rx.schedulers.Schedulers;
 public class ChangeColorImageView extends ImageView {
     private Paint mPaint;
     private int iconColor;
+    private Subscriber<Integer> subscriber;
+    private Observable<Integer> observable;
 
     public ChangeColorImageView(Context context) {
         this(context, null);
@@ -91,6 +96,11 @@ public class ChangeColorImageView extends ImageView {
             bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             canvas.drawBitmap(bitmap, 0, 0, mPaint);
             canvas.restore();
+
+            if (subscriber != null && !subscriber.isUnsubscribed()) {
+                observable.unsafeSubscribe(subscriber);
+            }
+
         }
 
     }
@@ -116,47 +126,87 @@ public class ChangeColorImageView extends ImageView {
     }
 
     public void setColors(final Integer[] colors) {
-        final Observable<Integer> observable = Observable.create(new Observable.OnSubscribe<Integer>() {
-            @Override
-            public void call(Subscriber<? super Integer> subscriber) {
-                if (subscriber.isUnsubscribed()) {
-                    return;
-                } else {
-                    for (int i = 0; i < colors.length; i++) {
-                        subscriber.onNext(colors[i]);
-                        Logger.i("线程-----颜色:" + colors[i]);
-                        SystemClock.sleep(2000);
+        Observable.interval(2, 2, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        Logger.d("间隔>>subscriber>>>onCompleted");
                     }
 
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("间隔>>>onError>>>" + e.toString());
+                    }
 
-                if (!subscriber.isUnsubscribed()) {
-                    subscriber.onCompleted();
-                }
-            }
-        });
+                    @Override
+                    public void onNext(Long aLong) {
+                        int i = aLong.intValue();
+                        if (i == colors.length - 1) {
+                            this.unsubscribe();
+                            onCompleted();
+                        }
 
-        final Subscriber<Integer> subscriber = new Subscriber<Integer>() {
-            @Override
-            public void onCompleted() {
-                Logger.d("subscriber>>>onCompleted");
-            }
+                        setShadowColorP(colors[i]);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Logger.e("间隔>>>onNext>>>" + colors[i] + "====" + simpleDateFormat.format(new Date()));
+                    }
+                });
 
-            @Override
-            public void onError(Throwable e) {
-                Logger.d("onError>>>" + e.toString());
-            }
 
-            @Override
-            public void onNext(Integer integer) {
-                setShadowColorP(integer);
-                Logger.e("onNext>>>" + integer);
-            }
-        };
-
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+//        observable = Observable.create(new Observable.OnSubscribe<Integer>() {
+//            @Override
+//            public void call(Subscriber<? super Integer> subscriber) {
+//                if (subscriber.isUnsubscribed()) {
+//                    return;
+//                } else {
+//                    for (int i = 0; i < colors.length; i++) {
+//
+//                        try {
+//
+//                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                            subscriber.onNext(colors[i]);
+//                            Logger.i("线程-----颜色:" + colors[i] + ">>>>" + simpleDateFormat.format(new Date()));
+////                            Thread.sleep(2000);
+//
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//
+//
+//                    }
+//
+//                }
+//
+//                if (!subscriber.isUnsubscribed()) {
+//                    subscriber.onCompleted();
+//                }
+//            }
+//        });
+//
+//        subscriber = new Subscriber<Integer>() {
+//            @Override
+//            public void onCompleted() {
+//                Logger.d("subscriber>>>onCompleted");
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                Logger.d("onError>>>" + e.toString());
+//            }
+//
+//            @Override
+//            public void onNext(Integer integer) {
+//                setShadowColorP(integer);
+//                Logger.e("onNext>>>" + integer);
+//            }
+//        };
+//
+//
+//        observable.subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(subscriber);
 
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="40dp"
+    android:orientation="vertical">
+
+    <com.rxandroid.ui.customview.SunBabyLoadingView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+
+    <com.rxandroid.ui.customview.CircleView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+
+    <com.rxandroid.ui.customview.EarView xmlns:gfl="http://schemas.android.com/apk/res/com.rxandroid"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        gfl:earRight="true"
+        gfl:earSolideColor="@color/common_line"
+        gfl:earText="8"
+        gfl:earTextColor="@color/colorPrimary"
+        gfl:earTextSize="11sp" />
+</LinearLayout>

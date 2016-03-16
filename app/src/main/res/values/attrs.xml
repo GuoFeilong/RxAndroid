@@ -6,4 +6,25 @@
     <declare-styleable name="ChangeColorImageView">
         <attr name="iconColor" />
     </declare-styleable>
+
+    <attr name="earSolideColor" format="color" />
+    <attr name="earStrokeColor" format="color" />
+    <attr name="earStrokeWidth" format="dimension" />
+    <attr name="earText" format="string" />
+    <attr name="earTextColor" format="color" />
+    <attr name="earTextSize" format="dimension" />
+    <attr name="earLeft" format="boolean" />
+    <attr name="earRight" format="boolean" />
+    <attr name="earBoth" format="boolean" />
+
+    <declare-styleable name="earView">
+        <attr name="earSolideColor" />
+        <attr name="earText" />
+        <attr name="earTextColor" />
+        <attr name="earTextSize" />
+        <attr name="earLeft" />
+        <attr name="earRight" />
+        <attr name="earBoth" />
+    </declare-styleable>
+
 </resources>

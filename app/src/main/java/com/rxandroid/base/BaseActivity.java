@@ -2,7 +2,6 @@ package com.rxandroid.base;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -13,10 +12,9 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     protected Context mContext;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mContext = this;
-
     }
 
     /**
